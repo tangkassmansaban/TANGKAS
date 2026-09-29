@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANGKAS - Teknologi Aksi Nyata untuk Kelestarian Lingkungan Sekolah</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --cyan: #00f0ff;
+            --green: #39ff14;
+            --bg-dark: #0a0a0f;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Glowing Effects */
+        .text-glow-cyan {
+            text-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan), 0 0 40px var(--cyan);
+        }
+        
+        .text-glow-green {
+            text-shadow: 0 0 10px var(--green), 0 0 20px var(--green);
+        }
+
+        .btn-glow {
+            position: relative;
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid var(--cyan);
+            box-shadow: 0 0 10px inset rgba(0, 240, 255, 0.5), 0 0 15px rgba(0, 240, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 20px inset rgba(0, 240, 255, 0.8), 0 0 30px rgba(0, 240, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-20deg);
+            transition: 0.5s;
+        }
+
+        .glass-card:hover::before {
+            left: 150%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--cyan);
+            box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.5);
+        }
+
+        .glass-card.green-hover:hover {
+            border-color: var(--green);
+            box-shadow: 0 10px 30px -10px rgba(57, 255, 20, 0.5);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-delayed {
+            animation: float 6s ease-in-out 3s infinite;
+        }
+
+        /* Scroll Reveal Utility Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 backdrop-blur-md bg-opacity-80 bg-[#0a0a0f] border-b border-gray-800" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 cursor-pointer">
+                    <span class="font-tech text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400">
+                        <i class="fa-solid fa-leaf text-green-400 mr-2"></i>TANGKAS
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#hero" class="hover:text-cyan-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Beranda</a>
+                        <a href="#about" class="hover:text-cyan-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Tentang</a>
+                        <a href="#activities" class="hover:text-cyan-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Aktivitas</a>
+                        <a href="#register" class="btn-glow px-5 py-2 rounded-full text-sm font-tech uppercase font-bold tracking-wider">Daftar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0f]/50 to-[#0a0a0f] z-0"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+            <div class="inline-block p-1 px-4 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-sm font-medium mb-6 floating-delayed backdrop-blur-sm">
+                <i class="fa-solid fa-microchip mr-2"></i> Event Teknologi Lingkungan Terbesar 2026
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tighter">
+                <span class="text-white">PROJEK</span> <br/>
+                <span class="text-glow-cyan text-cyan-400">TANGKAS</span>
+            </h1>
+            
+            <h2 class="text-xl md:text-2xl text-gray-300 font-light max-w-3xl mx-auto mb-8 font-tech text-glow-green">
+                Teknologi Aksi Nyata untuk Kelestarian Lingkungan Sekolah
+            </h2>
+            
+            <p class="text-gray-400 max-w-2xl mx-auto mb-10 text-lg leading-relaxed">
+                Mencetak generasi inovator masa depan! TANGKAS memberdayakan anak-anak untuk menggunakan teknologi sebagai solusi perlindungan lingkungan di sekolah dan sekitarnya.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#register" class="btn-glow px-8 py-4 rounded-full font-tech text-lg uppercase tracking-widest font-bold flex items-center group">
+                    <span>Daftar Sekarang</span>
+                    <i class="fa-solid fa-arrow-right ml-3 transform group-hover:translate-x-2 transition-transform"></i>
+                </a>
+                <a href="#about" class="text-gray-400 hover:text-white px-8 py-4 rounded-full font-tech text-lg uppercase tracking-widest transition-colors flex items-center border border-transparent hover:border-gray-600">
+                    Pelajari Lebih Lanjut
+                </a>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute top-1/4 left-10 w-32 h-32 bg-cyan-500 rounded-full mix-blend-screen filter blur-[100px] opacity-50 floating"></div>
+        <div class="absolute bottom-1/4 right-10 w-40 h-40 bg-green-500 rounded-full mix-blend-screen filter blur-[120px] opacity-30 floating-delayed"></div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 relative z-10 bg-[#0a0a0f]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                
+                <div class="w-full lg:w-1/2 reveal">
+                    <div class="relative">
+                        <!-- Tech frame -->
+                        <div class="absolute inset-0 border-2 border-cyan-500/30 rounded-2xl transform translate-x-4 translate-y-4"></div>
+                        <img src="https://placehold.co/800x600/0a0a0f/00f0ff?text=Tech+Kids+Nature" alt="Anak-anak belajar teknologi" class="relative rounded-2xl w-full object-cover grayscale hover:grayscale-0 transition-all duration-700 shadow-[0_0_30px_rgba(0,240,255,0.2)]">
+                        <!-- Overlay icon -->
+                        <div class="absolute -bottom-6 -right-6 bg-gray-900 border border-green-500 p-6 rounded-2xl shadow-[0_0_20px_rgba(57,255,20,0.3)] floating">
+                            <i class="fa-solid fa-earth-asia text-5xl text-green-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-1/2 reveal">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 font-tech">
+                        Visi <span class="text-cyan-400">Masa Depan</span>
+                    </h2>
+                    <div class="w-20 h-1 bg-gradient-to-r from-cyan-400 to-green-400 mb-8"></div>
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        TANGKAS bukan sekadar acara pameran. Ini adalah gerakan untuk melahirkan pahlawan lingkungan berbasis teknologi. Kami percaya bahwa anak-anak memiliki imajinasi tanpa batas yang, jika dibekali dengan alat digital yang tepat, dapat mengubah wajah kelestarian lingkungan sekolah.
+                    </p>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Memperkenalkan logika pemrograman sejak dini untuk solusi nyata.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Meningkatkan kesadaran akan jejak karbon dan pengelolaan sampah di sekolah.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-green-400 mt-1 mr-3"></i>
+                            <span>Membangun prototipe teknologi hijau (Green Tech) bersama mentor ahli.</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Activities Section -->
+    <section id="activities" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 font-tech">
+                    Zona <span class="text-green-400">Eksplorasi</span>
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Tiga pilar utama acara TANGKAS yang dirancang interaktif untuk memicu kreativitas dan kepedulian peserta.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Card 1 -->
+                <div class="glass-card rounded-2xl p-8 reveal" style="transition-delay: 100ms;">
+                    <div class="w-16 h-16 rounded-full bg-cyan-900/50 flex items-center justify-center mb-6 border border-cyan-500/30 shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+                        <i class="fa-solid fa-code text-2xl text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 font-tech text-white">Coding for Nature</h3>
+                    <p class="text-gray-400 mb-6">Workshop interaktif di mana anak-anak membuat aplikasi sederhana dan game edukasi bertema pemilahan sampah dan penghematan air.</p>
+                    <a href="#" class="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center group">
+                        Lihat Silabus <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card green-hover rounded-2xl p-8 reveal" style="transition-delay: 200ms;">
+                    <div class="w-16 h-16 rounded-full bg-green-900/50 flex items-center justify-center mb-6 border border-green-500/30 shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+                        <i class="fa-solid fa-robot text-2xl text-green-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 font-tech text-white">Eco-Robotics</h3>
+                    <p class="text-gray-400 mb-6">Merakit dan memprogram robot pengangkut sampah menggunakan bahan daur ulang dan mikrokontroler dasar. Inovasi langsung di tangan mereka!</p>
+                    <a href="#" class="text-green-400 hover:text-green-300 font-semibold flex items-center group">
+                        Lihat Proyek <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card rounded-2xl p-8 reveal" style="transition-delay: 300ms;">
+                    <div class="w-16 h-16 rounded-full bg-cyan-900/50 flex items-center justify-center mb-6 border border-cyan-500/30 shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+                        <i class="fa-solid fa-solar-panel text-2xl text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 font-tech text-white">Green Tech Expo</h3>
+                    <p class="text-gray-400 mb-6">Pameran mini yang menampilkan prototipe teknologi hijau hasil karya sekolah-sekolah peserta, mulai dari IoT penyiram tanaman hingga panel surya mini.</p>
+                    <a href="#" class="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center group">
+                        Jadwal Expo <i class="fa-solid fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Footer -->
+    <footer class="relative z-10 border-t border-gray-800 bg-[#07070a] pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-center justify-center text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 font-tech">Siap Menjadi <span class="text-cyan-400">Pahlawan Bumi?</span></h2>
+                <p class="text-gray-400 mb-8 max-w-xl">Daftarkan sekolah dan anak-anak Anda sekarang. Kuota terbatas untuk memastikan kualitas pembelajaran yang optimal.</p>
+                <button id="register" class="btn-glow px-10 py-4 rounded-full font-tech text-xl uppercase tracking-widest font-bold shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+                    Daftar Acara
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-800 pt-8 mt-8">
+                <div>
+                    <span class="font-tech text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400 mb-4 inline-block">
+                        <i class="fa-solid fa-leaf text-green-400 mr-2"></i>TANGKAS
+                    </span>
+                    <p class="text-gray-500 text-sm">Teknologi Aksi Nyata untuk Kelestarian Lingkungan Sekolah. Menginspirasi masa depan berkelanjutan.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 font-tech">Tautan</h4>
+                    <ul class="space-y-2 text-gray-500 text-sm">
+                        <li><a href="#hero" class="hover:text-cyan-400 transition-colors">Beranda</a></li>
+                        <li><a href="#about" class="hover:text-cyan-400 transition-colors">Tentang Kami</a></li>
+                        <li><a href="#activities" class="hover:text-cyan-400 transition-colors">Aktivitas</a></li>
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Panduan Peserta</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 font-tech">Kontak</h4>
+                    <ul class="space-y-2 text-gray-500 text-sm">
+                        <li><i class="fa-solid fa-envelope mr-2 text-cyan-400"></i> halo@tangkas.id</li>
+                        <li><i class="fa-solid fa-phone mr-2 text-cyan-400"></i> +62 811 2233 4455</li>
+                        <li class="mt-4 flex space-x-4">
+                            <a href="#" class="text-gray-500 hover:text-green-400 transition-colors text-xl"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" class="text-gray-500 hover:text-cyan-400 transition-colors text-xl"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="#" class="text-gray-500 hover:text-cyan-400 transition-colors text-xl"><i class="fa-brands fa-twitter"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-12 text-gray-600 text-sm">
+                &copy; 2026 TANGKAS. Hak Cipta Dilindungi.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Scroll Reveal Logic ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger once on load
+
+        // --- Canvas Tech Network Background ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                // Randomize between cyan and green
+                this.color = Math.random() > 0.5 ? '#00f0ff' : '#39ff14';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = 0.6;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0; // reset
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+            let particleCount = Math.floor((width * height) / 15000); // Responsive amount
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Update and draw particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Draw connecting lines
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        
+                        // Line style
+                        const opacity = 1 - (distance / 120);
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${opacity * 0.2})`; // Subtle cyan connections
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        // Initialize
+        window.addEventListener('resize', () => {
+            initCanvas();
+            createParticles();
+        });
+        
+        window.onload = function() {
+            initCanvas();
+            createParticles();
+            animateCanvas();
+        };
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
